@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  </head>
+  <body>
+    <style>
+      body {
+        /** font-family: Arial, Helvetica, sans-serif; */
+      }
+
+      /* The Modal (background) */
+      .t-modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 5; /* Sit on top */
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Modal Content */
+      .t-modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+      }
+
+      /* Add Animation */
+      @-webkit-keyframes animatetop {
+        from {
+          top: -300px;
+          opacity: 0;
+        }
+        to {
+          top: 0;
+          opacity: 1;
+        }
+      }
+
+      @keyframes animatetop {
+        from {
+          top: -300px;
+          opacity: 0;
+        }
+        to {
+          top: 0;
+          opacity: 1;
+        }
+      }
+
+      #t-btn-open-modal {
+        cursor: pointer;
+        color: #1990ea;
+        font-size: 24px;
+        padding-right: 10px;
+      }
+
+      /* The Close Button */
+      .t-close {
+        color: #919191;
+        font-size: 28px;
+        font-weight: bold;
+        margin-left: auto;
+        background: #e1e1e1;
+        position: absolute;
+        right: -13px;
+        top: -16px;
+        border-radius: 50%;
+        width: 34px;
+        text-align: center;
+      }
+
+      .t-close:hover,
+      .t-close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .t-modal-body {
+        max-height: calc(100vh - 200px);
+        min-height: calc(35vh);
+        overflow: auto;
+      }
+
+      .t-body-img {
+        display: flex;
+        width: 100%;
+      }
+
+      .t-noti {
+        width: 33%;
+        height: auto;
+      }
+      .t-activity {
+        width: 67%;
+        height: auto;
+      }
+
+      .t-with-icon {
+        display: -webkit-flex; /* Safari */
+        -webkit-align-items: center; /* Safari 7.0+ */
+        display: flex;
+        align-items: center;
+      }
+      .t-with-icon div {
+        font-weight: bold;
+        -webkit-flex: 1; /* Safari 6.1+ */
+        flex: 1;
+        padding-left: 10px;
+      }
+      .t-with-icon span {
+        margin-right: 5px;
+        color: #ffffff;
+        background-color: black;
+        opacity: 0.5;
+        padding: 2px;
+        border-radius: 8px;
+        min-width: 16px;
+        text-align: center;
+      }
+
+      .t-header {
+        height: 30px;
+        color: #ffffff;
+        background-color: #f44336;
+        border-bottom: #db2222 solid;
+      }
+
+      .t-header-noti {
+        display: none;
+        background-color: #f44336;
+        border-bottom: #db2222 solid;
+      }
+
+      .t-header-event {
+        background-color: #fdc106;
+        border-bottom: #f0b605 solid;
+      }
+
+      .t-header-task {
+        background-color: #fff;
+        border-bottom: #56c7f4 solid;
+        color: #000;
+      }
+      .t-content {
+        min-height: 50px;
+      }
+      .t-content-noti {
+        display: none;
+        background-color: #faeae8;
+      }
+      .t-content-event {
+        background-color: #fee28b;
+      }
+      .t-content-birthday {
+        background-color: #5be385;
+        display: flex;
+        padding: 5px 10px 5px 10px;
+      }
+
+      .t-content ul {
+        margin: 0;
+        padding: 5px;
+        list-style-type: none;
+        padding-inline-start: 10px;
+      }
+
+      .t-content ul li {
+        padding: 5px 0 5px 0;
+      }
+
+      .t-content-noti ul {
+        list-style-type: disc;
+        padding-inline-start: 26px;
+      }
+      .t-content-noti ul li div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .t-content-noti ul li div:hover {
+        white-space: inherit;
+        overflow: visible;
+      }
+
+      .t-content-event ul {
+        padding-right: 5px;
+      }
+
+      .t-content-task ul {
+        padding-right: 10px;
+      }
+
+      .mau-qua-han {
+        background: #f44336;
+      }
+      .mau-dang-thuc-hien {
+        background: #25bbd3;
+      }
+      .mau-cho-thuc-hien {
+        background: #fdc106;
+      }
+      .mau-cho-xac-nhan {
+        background: #a53cb6;
+      }
+      .t-sub-title {
+        color: #9f9f9f;
+      }
+      .t-title {
+        display: -webkit-flex; /* Safari */
+        -webkit-align-items: center; /* Safari 7.0+ */
+        display: flex;
+        align-items: center;
+      }
+      .t-title div {
+        font-weight: bold;
+        -webkit-flex: 1; /* Safari 6.1+ */
+        flex: 1;
+      }
+      .t-title span {
+        color: #fff;
+        border-radius: 8px;
+        min-width: 16px;
+        padding: 2px;
+      }
+
+      ul.t-img-birthday {
+        display: flex;
+      }
+
+      ul.t-img-birthday li img {
+        float: left;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        width: 40px;
+        height: 40px;
+        margin-right: -10px;
+      }
+      .t-happy-text {
+        padding: 0 10px 0 10px;
+      }
+
+      .t-modal-content a:-webkit-any-link {
+        color: inherit;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .t-img-cake {
+        width: 85px;
+        height: 75px;
+      }
+      ul.t-img-birthday .hide-class {
+        display: none;
+      }
+      ul.t-img-birthday .showmore-btn {
+        padding: 16px 10px 5px 16px !important;
+        cursor: zoom-in;
+      }
+      ul.t-img-birthday.change-display {
+        display: block !important;
+      }
+      ul.t-img-birthday.change-display li {
+        padding: 0 !important;
+      }
+      ul.t-img-birthday.change-display .showmore-btn {
+        padding: 16px 10px 5px 16px !important;
+        cursor: zoom-out;
+      }
+    </style>
+
+    <!-- Trigger/Open The Modal -->
+    <i class="fa fa-flag"
+      id="t-btn-open-modal"
+    ></i>
+
+    <!-- The Modal -->
+    <div id="multi-noti-modal" class="t-modal">
+      <!-- Modal content -->
+      <div class="t-modal-content">
+        <span class="t-close">&times;</span>
+        <div class="t-modal-body">
+          <div class="t-body-img">
+            <div class="t-noti">
+              <div class="t-header t-header-noti t-with-icon">
+                <div>
+                  THÔNG BÁO
+                </div>
+                <span>9</span>
+              </div>
+              <div class="t-content t-content-noti">
+                <ul></ul>
+              </div>
+              <div class="t-header t-header-event t-with-icon">
+                <div>
+                  HÔM NAY
+                </div>
+                <span>9 sự kiện</span>
+              </div>
+              <div class="t-content t-content-event">
+                <ul></ul>
+              </div>
+              <div class="t-content t-content-birthday">
+                <img
+                  class="t-img-cake"
+                  src="http://dev.mobilink.vn/o/mobilink-theme/images/cake.png"
+                />
+                <div style="flex: 1;">
+                  <div class="t-happy-text">Chúc mừng sinh nhật</div>
+                  <ul class="t-img-birthday"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="t-activity">
+              <div class="t-header t-header-task t-with-icon">
+                <div>Công việc hôm nay</div>
+              </div>
+              <div class="t-content t-content-task">
+                <ul></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function() {
+        // Get the modal
+        var modal = document.getElementById("multi-noti-modal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("t-btn-open-modal");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("t-close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function() {
+          modal.style.display = "flex";
+          runCallAPI();
+        };
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+          modal.style.display = "none";
+        };
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        };
+
+        function renderNoti(notis) {
+          $(".t-header-noti span").html(notis.length || 0);
+          $(".t-content-noti ul").empty();
+          for (var i in notis) {
+            var item =
+              '<li>' +
+                '<a>' +
+                  '<div class="t-title">' +
+                    notis[i].name +
+                  '</div>' +
+                '</a>' +
+              '</li>';
+            $(".t-content-noti ul").append(item);
+          }
+        }
+
+        function renderEvents(evts) {
+          $(".t-header-event span").html((evts.length || 0) + " sự kiện");
+          $(".t-content-event ul").empty();
+          for (var i in evts) {
+            var item =
+              '<li>' +
+                '<a class="url-events" href=" ' + (eventUrl || '__event_url__') + evts[i].activityId + '">' +
+                  '<div class="t-title">' +
+                    '<div>' +
+                      evts[i].location +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="t-sub-title">' +
+                    evts[i].subject +
+                  '</div>' +
+                '</a>' +
+              '</li>';
+            $(".t-content-event ul").append(item);
+          }
+          $(".t-content-event ul li a").click(function () {
+            modal.style.display = "none";
+          });
+        }
+
+        function renderBirthdays(btds) {
+          $("ul.t-img-birthday").empty();
+          var classe = ''
+          for (var i in btds) {
+            classe = i > 5 ? 'hide-class' : ''
+            var item =
+              '<li class="' + classe + '" >' +
+                '<img src="' +
+                  (btds[i].linkImg || '/image/user_male_portrait') +
+                '" title="' +
+                  btds[i].fullName +
+                '">' +
+              '</li>';
+            $("ul.t-img-birthday").append(item);
+          }
+          $("ul.t-img-birthday").append(classe ? '<li class="showmore-btn">...</li>' : '');
+          $(".showmore-btn").click(function (event) {
+            event.preventDefault();
+            $("ul.t-img-birthday").toggleClass( "change-display" )
+            $("ul.t-img-birthday li.hide-class").toggle()
+          })
+        }
+
+        function renderTasks(tks) {
+          $(".t-content-task ul").empty();
+          for (var i in tks) {
+            // var rs = checkState(tks[i]);
+
+            var item =
+              '<li>' +
+                '<a class="url-tasks" href=" ' + (taskUrl || '__task_url__') + tks[i].activityId + '">' +
+                  '<div class="t-title">' +
+                    '<div>' +
+                      tks[i].subject +
+                    '</div>' +
+                    '<span style="background-color: ' +
+                      tks[i].stateColor +
+                    ';">' +
+                      tks[i].stateName +
+                    '</span>' +
+                  '</div>' +
+                  '<div class="t-sub-title">Hạn hoàn thành: ' +
+                    window.moment(Number(tks[i].endDate) || new Date().getTime()).format('DD/MM/YYYY') +
+                  '</div>' +
+                '</a>' +
+              '</li>';
+            $(".t-content-task ul").append(item);
+            $(".t-content-task ul li a").click(function () {
+              modal.style.display = "none";
+            });
+          }
+        }
+        function checkState(it) {
+          var result = {
+            text: "Quá hạn",
+            classText: "mau-qua-han",
+            overDate: '01/01/2001'
+          };
+          switch (it.state) {
+            case 0:
+              result = {
+                text: "Quá hạn",
+                classText: "mau-qua-han"
+              };
+              break;
+            case 1:
+              result = {
+                text: "Đang thực hiện",
+                classText: "mau-dang-thuc-hien"
+              };
+              break;
+            case 2:
+              result = {
+                text: "Chờ thực hiện",
+                classText: "mau-cho-thuc-hien"
+              };
+              break;
+            case 3:
+              result = {
+                text: "Chờ xác nhận",
+                classText: "mau-cho-xac-nhan"
+              };
+              break;
+
+            default:
+              result = {
+                text: "Quá hạn",
+                classText: "mau-qua-han"
+              };
+              break;
+          }
+          result.overDate = window.moment(Number(it.endDate) || new Date().getTime()).format('DD/MM/YYYY');
+          return result;
+        }
+
+        var taskUrl = '';
+        var eventUrl = '';
+        window.axios.get('/o/v2/mobilink/systemconfigs?start=-1&end=-1&type=config')
+          .then(function (response2) {
+            var serializable2 = response2.data
+            taskUrl = serializable2.configuration.systemurl.taskurl + 'detail/'
+            eventUrl = serializable2.configuration.systemurl.eventurl + 'detail/'
+            $( ".url-tasks" ).each(function() {
+              var link = $( this ).attr( "href" ).replace( "__task_url__", taskUrl)
+              $( this ).attr( "href", link );
+            });
+            $( ".url-events" ).each(function() {
+              var link = $( this ).attr( "href" ).replace( "__event_url__", eventUrl)
+              $( this ).attr( "href", link );
+            });
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+
+        if (document.cookie.indexOf("runMultiNotificationCallAPI=true") < 0) {
+          document.cookie =
+            "runMultiNotificationCallAPI=true; " + document.cookie;
+          runCallAPI();
+        }
+
+        function runCallAPI() {
+          modal.style.display = "flex";
+          runCallAPIFake();
+          zinAPI();
+        }
+
+        function zinAPI () {
+          
+          var config = {
+            headers: {
+              'groupId': themeDisplay.getScopeGroupId()
+            }
+          }
+          var urlBirthDay = themeDisplay.getCDNBaseURL() +
+            '/o/v2/mobilink/employees?start=-1&end=-1&sort=birthdate' +
+            'month=' + window.moment().format('MM')
+          window.axios.get(urlBirthDay, config)
+            .then(function (response) {
+              var births = [].concat(response.data.data || [])
+              renderBirthdays(births)
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+          
+          var urlToday = themeDisplay.getCDNBaseURL() +
+            '/o/v2/mobilink/activities/today'
+          window.axios.get(urlToday, config).then(function (response) {
+            // TODO:
+            var activities = response.data
+            renderTasks([].concat(activities.task.data || []))
+            renderEvents([].concat(activities.event.data || []))
+          })
+            .catch(function (error) {
+              console.log(error)
+            })
+
+        }
+
+        function runCallAPIFake() {
+
+          var notifications = [
+            {
+              name:
+                "Yeu cau chan chinh thoi gianYeu cau chan chinh thoi gianYeu cau chan chinh thoi gianYeu cau chan chinh thoi gianYeu cau chan chinh thoi gianYeu cau chan chinh thoi gianYeu cau chan chinh thoi gian"
+            },
+            {
+              name: "Yeu cau chan chinh thoi gian 2"
+            },
+            {
+              name: "Yeu cau chan chinh thoi gian"
+            },
+            {
+              name: "Yeu cau chan chinh thoi gian 2"
+            },
+            {
+              name: "Yeu cau chan chinh thoi gian"
+            },
+            {
+              name: "Yeu cau chan chinh thoi gian 2"
+            }
+          ];
+          renderNoti(notifications);
+
+          //////////////////////////////////
+
+          var events = [
+            {
+              activityId: 1,
+              location: "Yeu cau chan chinh thoi gian",
+              subject: "Yeu cau chan chinh thoi gian"
+            },
+            {
+              activityId: 2,
+              location: "Yeu cau chan chinh thoi gian 2",
+              subject: "Yeu cau chan chinh thoi gian 2"
+            },
+            {
+              activityId: 3,
+              location: "Yeu cau chan chinh thoi gian",
+              subject: "Yeu cau chan chinh thoi gian"
+            },
+            {
+              activityId: 2,
+              location: "Yeu cau chan chinh thoi gian 2",
+              subject: "Yeu cau chan chinh thoi gian 2"
+            },
+            {
+              activityId: 2,
+              location: "Yeu cau chan chinh thoi gian",
+              subject: "Yeu cau chan chinh thoi gian"
+            },
+            {
+              activityId: 2,
+              location: "Yeu cau chan chinh thoi gian 2",
+              subject: "Yeu cau chan chinh thoi gian 2"
+            },
+            {
+              activityId: 2,
+              location: "Yeu cau chan chinh thoi gian",
+              subject: "Yeu cau chan chinh thoi gian"
+            },
+            {
+              activityId: 2,
+              location: "Yeu cau chan chinh thoi gian 2",
+              subject: "Yeu cau chan chinh thoi gian 2"
+            }
+          ];
+          renderEvents(events);
+
+          //////////////////////////////
+
+          var birthdays = [
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van A",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            },
+            {
+              fullName: "Nguyen Van B",
+              linkImg:
+                "http://dev.mobilink.vn/image/user_male_portrait?img_id=173724&img_id_token=ae977d55-afde-65d0-9cdb-3e47ae365a27"
+            }
+          ];
+          renderBirthdays(birthdays);
+
+          ////////////////////
+
+          var tasks = [
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian",
+              endDate: "1556176312443",
+              stateColor: "#f44336",
+              stateName: "Qúa hạn"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian",
+              endDate: "1556176312443",
+              stateColor: "#f44336",
+              stateName: "Qúa hạn"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            },
+            {
+              activityId: 2,
+              subject: "Yeu cau chan chinh thoi gian 2",
+              endDate: "1556176312443",
+              stateColor: "#FFC107",
+              stateName: "Chờ thực hiện"
+            }
+          ];
+          renderTasks(tasks);
+        }
+      });
+    </script>
+  </body>
+</html>
