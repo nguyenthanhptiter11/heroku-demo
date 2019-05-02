@@ -7,6 +7,8 @@
     <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplebar/3.1.5/simplebar.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplebar/3.1.5/simplebar.min.js"></script>
   </head>
   <body>
     <style>
@@ -204,10 +206,21 @@
         overflow: visible;
       }
 
+      .t-content-event {
+        width: 100%;
+        max-height: calc(100vh - 328px);
+        min-height: calc(35vh + 130px);
+      }
+
       .t-content-event ul {
         padding-right: 5px;
       }
 
+      .t-content-task {
+        width: 100%;
+        max-height: calc(100vh - 250px);
+        min-height: calc(35vh - 50px);
+      }
       .t-content-task ul {
         padding-right: 10px;
       }
@@ -280,7 +293,7 @@
         cursor: zoom-in;
       }
       ul.t-img-birthday.change-display {
-        display: block !important;
+        display: inherit !important;
       }
       ul.t-img-birthday.change-display li {
         padding: 0 !important;
@@ -319,7 +332,7 @@
                 </div>
                 <span>9 sự kiện</span>
               </div>
-              <div class="t-content t-content-event">
+              <div class="t-content t-content-event simplebar" data-simplebar>
                 <ul></ul>
               </div>
               <div class="t-content t-content-birthday">
@@ -337,7 +350,7 @@
               <div class="t-header t-header-task t-with-icon">
                 <div>Công việc hôm nay</div>
               </div>
-              <div class="t-content t-content-task">
+              <div class="t-content t-content-task simplebar" data-simplebar>
                 <ul></ul>
               </div>
             </div>
@@ -507,7 +520,7 @@
           }
           var urlBirthDay = themeDisplay.getCDNBaseURL() +
             '/o/v2/mobilink/employees?start=-1&end=-1&sort=birthdate' +
-            'month=' + window.moment().format('MM')
+            '&month=' + window.moment().format('MM')
           window.axios.get(urlBirthDay, config)
             .then(function (response) {
               var births = [].concat(response.data.data || [])
