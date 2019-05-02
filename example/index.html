@@ -132,16 +132,16 @@
       .t-with-icon span {
         margin-right: 5px;
         color: #ffffff;
-        background-color: black;
-        opacity: 0.5;
-        padding: 2px;
+        background-color: #9f7b0b;
+        /** opacity: 0.5; */
+        padding: 2px 4px 2px 4px;;
         border-radius: 8px;
         min-width: 16px;
         text-align: center;
       }
 
       .t-header {
-        height: 30px;
+        height: 38px;
         color: #ffffff;
         background-color: #f44336;
         border-bottom: #db2222 solid;
@@ -154,8 +154,8 @@
       }
 
       .t-header-event {
-        background-color: #fdc106;
-        border-bottom: #f0b605 solid;
+        background-color: #fdc205;
+        border-bottom: #e0aa05 solid;
       }
 
       .t-header-task {
@@ -171,10 +171,10 @@
         background-color: #faeae8;
       }
       .t-content-event {
-        background-color: #fee28b;
+        background-color: #fdc205;
       }
       .t-content-birthday {
-        background-color: #5be385;
+        background-color: #fee28b;
         display: flex;
         padding: 5px 10px 5px 10px;
       }
@@ -219,7 +219,7 @@
         background: #25bbd3;
       }
       .mau-cho-thuc-hien {
-        background: #fdc106;
+        background: #fdc205;
       }
       .mau-cho-xac-nhan {
         background: #a53cb6;
@@ -242,19 +242,20 @@
         color: #fff;
         border-radius: 8px;
         min-width: 16px;
-        padding: 2px;
+        padding: 2px 4px 2px 4px;;
       }
 
       ul.t-img-birthday {
         display: flex;
+        padding: 2px;
       }
 
       ul.t-img-birthday li img {
         float: left;
         border-radius: 50%;
         border: 2px solid #fff;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         margin-right: -10px;
       }
       .t-happy-text {
@@ -268,14 +269,14 @@
       }
 
       .t-img-cake {
-        width: 85px;
-        height: 75px;
+        width: 65px;
+        height: 60px;
       }
       ul.t-img-birthday .hide-class {
         display: none;
       }
       ul.t-img-birthday .showmore-btn {
-        padding: 16px 10px 5px 16px !important;
+        padding: 12px 10px 5px 16px !important;
         cursor: zoom-in;
       }
       ul.t-img-birthday.change-display {
@@ -402,7 +403,7 @@
                       evts[i].location +
                     '</div>' +
                   '</div>' +
-                  '<div class="t-sub-title">' +
+                  '<div class="t-sub-title-event">' +
                     evts[i].subject +
                   '</div>' +
                 '</a>' +
@@ -440,8 +441,6 @@
         function renderTasks(tks) {
           $(".t-content-task ul").empty();
           for (var i in tks) {
-            // var rs = checkState(tks[i]);
-
             var item =
               '<li>' +
                 '<a class="url-tasks" href=" ' + (taskUrl || '__task_url__') + tks[i].activityId + '">' +
@@ -465,48 +464,6 @@
               modal.style.display = "none";
             });
           }
-        }
-        function checkState(it) {
-          var result = {
-            text: "Quá hạn",
-            classText: "mau-qua-han",
-            overDate: '01/01/2001'
-          };
-          switch (it.state) {
-            case 0:
-              result = {
-                text: "Quá hạn",
-                classText: "mau-qua-han"
-              };
-              break;
-            case 1:
-              result = {
-                text: "Đang thực hiện",
-                classText: "mau-dang-thuc-hien"
-              };
-              break;
-            case 2:
-              result = {
-                text: "Chờ thực hiện",
-                classText: "mau-cho-thuc-hien"
-              };
-              break;
-            case 3:
-              result = {
-                text: "Chờ xác nhận",
-                classText: "mau-cho-xac-nhan"
-              };
-              break;
-
-            default:
-              result = {
-                text: "Quá hạn",
-                classText: "mau-qua-han"
-              };
-              break;
-          }
-          result.overDate = window.moment(Number(it.endDate) || new Date().getTime()).format('DD/MM/YYYY');
-          return result;
         }
 
         var taskUrl = '';
