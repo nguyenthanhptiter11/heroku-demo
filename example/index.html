@@ -113,6 +113,7 @@
       .t-noti {
         width: 33%;
         height: auto;
+        background-color: #fdc205;
       }
       .t-activity {
         width: 67%;
@@ -179,6 +180,8 @@
         background-color: #fee28b;
         display: flex;
         padding: 5px 10px 5px 10px;
+        box-shadow: 0 -12px 20px -12px #616161;
+        position: relative;
       }
 
       .t-content ul {
@@ -208,8 +211,13 @@
 
       .t-content-event {
         width: 100%;
-        max-height: calc(100vh - 328px);
-        min-height: calc(35vh + 130px);
+        max-height: calc(100vh - 46vh);
+        min-height: calc(35vh + 17vh);
+      }
+
+      .t-content-event-2 {
+        max-height: calc(100vh - 35vh);
+        min-height: calc(35vh - -28vh);
       }
 
       .t-content-event ul {
@@ -218,11 +226,19 @@
 
       .t-content-task {
         width: 100%;
-        max-height: calc(100vh - 250px);
-        min-height: calc(35vh - 50px);
+        max-height: calc(100vh - 37vh);
+        min-height: calc(35vh - 5vh);
       }
       .t-content-task ul {
         padding-right: 10px;
+      }
+
+      .t-content-task ul li:nth-child(odd) {
+        background: #ffffff;
+      }
+
+      .t-content-task ul li:nth-child(even) {
+        background: #f6f6f6;
       }
 
       .mau-qua-han {
@@ -430,25 +446,31 @@
 
         function renderBirthdays(btds) {
           $("ul.t-img-birthday").empty();
-          var classe = ''
-          for (var i in btds) {
-            classe = i > 5 ? 'hide-class' : ''
-            var item =
-              '<li class="' + classe + '" >' +
-                '<img src="' +
-                  (btds[i].linkImg || '/image/user_male_portrait') +
-                '" title="' +
-                  btds[i].fullName +
-                '">' +
-              '</li>';
-            $("ul.t-img-birthday").append(item);
+          if (btds.length === 0) {
+            $(".t-content-birthday").hide();
+            $(".t-content-event").addClass("t-content-event-2");
+          } else {
+            $(".t-content-event").removeClass("t-content-event-2");
+            var classe = ''
+            for (var i in btds) {
+              classe = i > 5 ? 'hide-class' : ''
+              var item =
+                '<li class="' + classe + '" >' +
+                  '<img src="' +
+                    (btds[i].linkImg || '/image/user_male_portrait') +
+                  '" title="' +
+                    btds[i].fullName +
+                  '">' +
+                '</li>';
+              $("ul.t-img-birthday").append(item);
+            }
+            $("ul.t-img-birthday").append(classe ? '<li class="showmore-btn">...</li>' : '');
+            $(".showmore-btn").click(function (event) {
+              event.preventDefault();
+              $("ul.t-img-birthday").toggleClass( "change-display" )
+              $("ul.t-img-birthday li.hide-class").toggle()
+            })
           }
-          $("ul.t-img-birthday").append(classe ? '<li class="showmore-btn">...</li>' : '');
-          $(".showmore-btn").click(function (event) {
-            event.preventDefault();
-            $("ul.t-img-birthday").toggleClass( "change-display" )
-            $("ul.t-img-birthday li.hide-class").toggle()
-          })
         }
 
         function renderTasks(tks) {
