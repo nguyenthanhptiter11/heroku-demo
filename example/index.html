@@ -38,7 +38,7 @@
         margin: auto;
         padding: 0;
         border: 1px solid #888;
-        width: 80%;
+        width: 800px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
           0 6px 20px 0 rgba(0, 0, 0, 0.19);
         -webkit-animation-name: animatetop;
@@ -79,6 +79,7 @@
 
       /* The Close Button */
       .t-close {
+        display: none;
         color: #919191;
         font-size: 28px;
         font-weight: bold;
@@ -100,8 +101,9 @@
       }
 
       .t-modal-body {
-        max-height: calc(100vh - 200px);
-        min-height: calc(35vh);
+        height: calc(50vh);
+        /** max-height: calc(100vh - 200px);
+        min-height: calc(35vh); */
         overflow: auto;
       }
 
@@ -159,12 +161,19 @@
       .t-header-event {
         background-color: #fdc205;
         border-bottom: #e0aa05 solid;
+        color: #5f3913;
       }
 
       .t-header-task {
         background-color: #fff;
         border-bottom: #56c7f4 solid;
-        color: #000;
+        color: #21adef;
+      }
+      .t-header-task span {
+        background: transparent;
+        color: #ccc;
+        font-size: 46px;
+        cursor: pointer;
       }
       .t-content {
         min-height: 50px;
@@ -175,6 +184,7 @@
       }
       .t-content-event {
         background-color: #fdc205;
+        color: #5f3913;
       }
       .t-content-birthday {
         background-color: #fee28b;
@@ -182,6 +192,7 @@
         padding: 5px 10px 5px 10px;
         box-shadow: 0 -12px 20px -12px #616161;
         position: relative;
+        height: 10vh;
       }
 
       .t-content ul {
@@ -211,13 +222,15 @@
 
       .t-content-event {
         width: 100%;
-        max-height: calc(100vh - 46vh);
-        min-height: calc(35vh + 17vh);
+        /** max-height: calc(100vh - 46vh);
+        min-height: calc(35vh + 17vh); */
+        height: calc(40vh - 51px);
       }
 
       .t-content-event-2 {
-        max-height: calc(100vh - 35vh);
-        min-height: calc(35vh - -28vh);
+        /** max-height: calc(100vh - 35vh);
+        min-height: calc(35vh - -28vh); */
+        height: calc(50vh - 41px);
       }
 
       .t-content-event ul {
@@ -226,8 +239,9 @@
 
       .t-content-task {
         width: 100%;
-        max-height: calc(100vh - 37vh);
-        min-height: calc(35vh - 5vh);
+        /** max-height: calc(100vh - 37vh);
+        min-height: calc(35vh - 5vh); */
+        height: calc(50vh - 41px);
       }
       .t-content-task ul {
         padding-right: 10px;
@@ -346,7 +360,7 @@
                 <div>
                   HÔM NAY
                 </div>
-                <span>9 sự kiện</span>
+                <span>0 sự kiện</span>
               </div>
               <div class="t-content t-content-event simplebar" data-simplebar>
                 <ul></ul>
@@ -364,7 +378,8 @@
             </div>
             <div class="t-activity">
               <div class="t-header t-header-task t-with-icon">
-                <div>Công việc hôm nay</div>
+                <div>CÔNG VIỆC HÔM NAY (0)</div>
+                <span class="t-close-2">&times;</span>
               </div>
               <div class="t-content t-content-task simplebar" data-simplebar>
                 <ul></ul>
@@ -384,7 +399,8 @@
         var btn = document.getElementById("t-btn-open-modal");
 
         // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("t-close")[0];
+        // var span = document.getElementsByClassName("t-close")[0];
+        var span = document.getElementsByClassName("t-close-2")[0];
 
         // When the user clicks the button, open the modal
         btn.onclick = function() {
@@ -475,6 +491,7 @@
 
         function renderTasks(tks) {
           $(".t-content-task ul").empty();
+          $(".t-header-task div").html("CÔNG VIỆC HÔM NAY (" + (tks.length || 0) + ")");
           for (var i in tks) {
             var item =
               '<li>' +
